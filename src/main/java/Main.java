@@ -2,68 +2,78 @@ import java.io.*;
 import java.net.*;
 import java.util.Base64;
 import com.google.gson.*;
+import com.google.gson.stream.JsonReader;
+
+import java.io.*;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        Gson gson = new Gson();
+        JsonReader jsonReader = new JsonReader(new FileReader("config.json"));
+        Config config = gson.fromJson(jsonReader, Config.class);
+
+
         try {
-            Socket client = new Socket("smtp.mailtrap.io", 2525);
+            Socket client = new Socket(config.server.host, config.server.port);
 
             BufferedReader is = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            PrintWriter os = new PrintWriter(client.getOutputStream());
+            BufferedWriter os = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 
             System.out.println(is.readLine());
-            os.println("EHLO example.com");
+            os.write("EHLO example.com\n");
             os.flush();
 
             String str = "";
-            while(!(str = is.readLine()).startsWith("250 ")) {
+            while(str = is.readLine()) {
                 System.out.println(str);
             }
             System.out.println(str);
 
-            os.println("AUTH LOGIN");
+            /*
+            os.write("AUTH LOGIN\n");
             os.flush();
 
             System.out.println(is.readLine());
 
-            os.println(new String(Base64.getEncoder().encode(args[0].getBytes())));
+            os.write(new String(Base64.getEncoder().encode(config.auth.username.getBytes())) + '\n');
             os.flush();
 
             System.out.println(is.readLine());
 
-            os.println(new String(Base64.getEncoder().encode(args[1].getBytes())));
+            os.write(new String(Base64.getEncoder().encode(config.auth.password.getBytes())) + '\n');
+            os.flush();
+
+            System.out.println(is.readLine());
+             */
+
+
+
+            os.write("MAIL FROM: <from@example.com>\r\n");
             os.flush();
 
             System.out.println(is.readLine());
 
-
-
-            os.println("MAIL FROM: <from@example.com>\r");
+            os.write("RCPT TO: <to@example.com>\r\n");
             os.flush();
 
             System.out.println(is.readLine());
 
-            os.println("RCPT TO: <to@example.com>\r");
+            os.write("DATA\r\n");
             os.flush();
 
             System.out.println(is.readLine());
 
-            os.println("DATA\r");
-            os.flush();
-
-            System.out.println(is.readLine());
-
-            os.println("To: to@example.com\r\n" +
+            os.write("To: to@example.com\r\n" +
                     "From: from@example.com\r\n" +
                     "Subject: Hello world!\r\n" +
                     "\r\n" +
                     "This is the test message...\r\n" +
-                    ".\r");
+                    ".\r\n");
             os.flush();
 
             System.out.println(is.readLine());
 
-            os.println("quit\r");
+            os.write("quit\r\n");
             os.flush();
 
             System.out.println(is.readLine());
