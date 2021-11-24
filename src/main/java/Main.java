@@ -50,13 +50,14 @@ public class Main {
 
                         System.out.println(is.readLine());
 
-                        os.write(
-                                "To: to@example.com\r\n" +
-                                "From: from@example.com\r\n" +
-                                "Subject: Hello world!\r\n" +
-                                "\r\n" +
-                                "\r\n" +
-                                ".\r\n");
+                        String msg =
+                                "To: " + String.join(",", group.victims) + "\r\n" +
+                                "From: " + group.sender + "\r\n" +
+                                "Subject: Important\r\n" +
+                                "\r\n" + group.message + "\r\n" +
+                                "\r\n.\r\n";
+
+                        os.write(msg);
                         os.flush();
                     }
                     System.out.println(is.readLine());
