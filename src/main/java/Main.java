@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Base64;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
@@ -19,64 +20,55 @@ public class Main {
             BufferedReader is = new BufferedReader(new InputStreamReader(client.getInputStream()));
             BufferedWriter os = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
 
-            System.out.println(is.readLine());
-            os.write("EHLO example.com\n");
-            os.flush();
 
             String str = "";
-            while(str = is.readLine()) {
+            boolean shouldQuit = false;
+            while(!shouldQuit) {
+                str = is.readLine();
                 System.out.println(str);
+
+                if (str.startsWith("220")) {
+                    os.write("EHLO" + config.auth + "\r\n");
+                    os.flush();
+                    continue;
+                }
+
+                if (str.startsWith("250 ")) {
+                    ArrayList<Group> groups = new ArrayList<>();
+                    for (Group group : groups) {
+                        os.write("MAIL FROM: <" + group.sender + ">\r\n");
+                        os.flush();
+
+                        System.out.println(is.readLine());
+
+
+                        for (String victim: group.victims) {
+                            os.write("RCPT TO: <" + victim +  ">\r\n");
+                            os.flush();
+                            System.out.println(is.readLine());
+                        }
+
+                        os.write("DATA\r\n");
+                        os.flush();
+
+                        System.out.println(is.readLine());
+
+                        os.write(
+                                "To: to@example.com\r\n" +
+                                "From: from@example.com\r\n" +
+                                "Subject: Hello world!\r\n" +
+                                "\r\n" +
+                                "\r\n" +
+                                ".\r\n");
+                        os.flush();
+                    }
+                    System.out.println(is.readLine());
+
+                    os.write("quit\r\n");
+                    os.flush();
+                    shouldQuit = true;
+                }
             }
-            System.out.println(str);
-
-            /*
-            os.write("AUTH LOGIN\n");
-            os.flush();
-
-            System.out.println(is.readLine());
-
-            os.write(new String(Base64.getEncoder().encode(config.auth.username.getBytes())) + '\n');
-            os.flush();
-
-            System.out.println(is.readLine());
-
-            os.write(new String(Base64.getEncoder().encode(config.auth.password.getBytes())) + '\n');
-            os.flush();
-
-            System.out.println(is.readLine());
-             */
-
-
-
-            os.write("MAIL FROM: <from@example.com>\r\n");
-            os.flush();
-
-            System.out.println(is.readLine());
-
-            os.write("RCPT TO: <to@example.com>\r\n");
-            os.flush();
-
-            System.out.println(is.readLine());
-
-            os.write("DATA\r\n");
-            os.flush();
-
-            System.out.println(is.readLine());
-
-            os.write("To: to@example.com\r\n" +
-                    "From: from@example.com\r\n" +
-                    "Subject: Hello world!\r\n" +
-                    "\r\n" +
-                    "This is the test message...\r\n" +
-                    ".\r\n");
-            os.flush();
-
-            System.out.println(is.readLine());
-
-            os.write("quit\r\n");
-            os.flush();
-
-            System.out.println(is.readLine());
         } catch (Exception ignored) {
 
         }

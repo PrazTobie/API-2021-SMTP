@@ -5,15 +5,10 @@ public class Config {
     public int numGroups;
     public ArrayList<String> messages;
     public Server server;
-    public Auth auth;
+    public String auth;
 
     public static class Server {
         public String host;
         public int port;
-    }
-
-    public static class Auth {
-        public String username;
-        public String password;
     }
 }
