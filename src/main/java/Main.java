@@ -1,11 +1,8 @@
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
-import java.util.Base64;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
-
-import java.io.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -13,6 +10,7 @@ public class Main {
         JsonReader jsonReader = new JsonReader(new FileReader("config.json"));
         Config config = gson.fromJson(jsonReader, Config.class);
 
+        ArrayList<Group> groups = Group.parseGroups(config);
 
         try {
             Socket client = new Socket(config.server.host, config.server.port);
@@ -34,7 +32,6 @@ public class Main {
                 }
 
                 if (str.startsWith("250 ")) {
-                    ArrayList<Group> groups = new ArrayList<>();
                     for (Group group : groups) {
                         os.write("MAIL FROM: <" + group.sender + ">\r\n");
                         os.flush();
