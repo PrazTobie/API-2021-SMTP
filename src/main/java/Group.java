@@ -26,7 +26,7 @@ public class Group {
             }
         }
 
-        if(current.victims.size() + 1 < groupSize) {
+        if(current.sender != null && current.victims.size() + 1 < groupSize) {
             current.victims.add(current.sender);
             while (current.victims.size() != 0) {
                 groups.get(Math.max(0,groups.size() - current.victims.size())).victims.add(current.victims.remove(0));

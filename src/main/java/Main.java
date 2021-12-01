@@ -26,7 +26,7 @@ public class Main {
                 System.out.println(str);
 
                 if (str.startsWith("220")) {
-                    os.write("EHLO" + config.auth + "\r\n");
+                    os.write("EHLO " + config.auth + "\r\n");
                     os.flush();
                     continue;
                 }
@@ -67,6 +67,8 @@ public class Main {
                     shouldQuit = true;
                 }
             }
+
+            client.close();
         } catch (Exception ignored) {
 
         }
