@@ -9,7 +9,7 @@ public class Main {
         Gson gson = new Gson();
         JsonReader jsonReader = new JsonReader(new FileReader("config.json"));
         Config config = gson.fromJson(jsonReader, Config.class);
-
+        config.verify();
         ArrayList<Group> groups = Group.parseGroups(config);
 
         try {
