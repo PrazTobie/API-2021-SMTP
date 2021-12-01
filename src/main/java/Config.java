@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class Config {
     public ArrayList<String> victims;
@@ -43,6 +45,15 @@ public class Config {
 
         if (victims.size() / numGroups < 3) {
             throw new RuntimeException("Too many groups");
+        }
+
+
+        Pattern pattern = Pattern.compile("^([a-z0-9_\\.-]+\\@[\\da-z\\.-]+\\.[a-z\\.]{2,6})$", Pattern.CASE_INSENSITIVE);
+        for (String victim : victims) {
+            Matcher matcher = pattern.matcher(victim);
+            if (!matcher.find()) {
+                throw new RuntimeException(victim + " is not a valid mail");
+            }
         }
     }
 }

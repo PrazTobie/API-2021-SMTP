@@ -66,7 +66,6 @@ public class Main {
                     shouldQuit = true;
                 }
             }
-
             client.close();
         } catch (Exception ignored) {
 
