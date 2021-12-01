@@ -38,7 +38,6 @@ public class Main {
 
                         System.out.println(is.readLine());
 
-
                         for (String victim: group.victims) {
                             os.write("RCPT TO: <" + victim +  ">\r\n");
                             os.flush();
@@ -59,8 +58,8 @@ public class Main {
 
                         os.write(msg);
                         os.flush();
+                        System.out.println(is.readLine());
                     }
-                    System.out.println(is.readLine());
 
                     os.write("quit\r\n");
                     os.flush();
