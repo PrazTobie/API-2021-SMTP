@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
@@ -15,11 +16,10 @@ public class Main {
         try {
             Socket client = new Socket(config.server.host, config.server.port);
 
-            BufferedReader is = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            BufferedWriter os = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+            BufferedReader is = new BufferedReader(new InputStreamReader(client.getInputStream(), StandardCharsets.UTF_8));
+            BufferedWriter os = new BufferedWriter(new OutputStreamWriter(client.getOutputStream(), StandardCharsets.UTF_8));
 
-
-            String str = "";
+            String str;
             boolean shouldQuit = false;
             while(!shouldQuit) {
                 str = is.readLine();
@@ -53,6 +53,7 @@ public class Main {
                                 "To: " + String.join(",", group.victims) + "\r\n" +
                                 "From: " + group.sender + "\r\n" +
                                 "Subject: Important\r\n" +
+                                "Content-type: text/plain; charset=utf-8\r\n" +
                                 "\r\n" + group.message + "\r\n" +
                                 "\r\n.\r\n";
 

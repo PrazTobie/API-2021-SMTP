@@ -15,6 +15,8 @@ public class Config {
     }
 
     public void verify() {
+        Matcher matcher;
+
         if (victims == null) {
             throw new RuntimeException("No victims specified");
         }
@@ -27,8 +29,16 @@ public class Config {
             throw new RuntimeException("No mail server specified");
         }
 
-        if (server.host == null) {
+        if (server.host.equals("")) {
             throw new RuntimeException("No host specified");
+        }
+
+        if (!server.host.equalsIgnoreCase("localhost")) {
+            Pattern patternIP = Pattern.compile("(\\b25[0-5]|\\b2[0-4][0-9]|\\b[01]?[0-9][0-9]?)(\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}");
+            matcher = patternIP.matcher(server.host);
+            if (!matcher.find()) {
+                throw new RuntimeException("Host is not a valid IP adress");
+            }
         }
 
         if (server.port == 0) {
@@ -47,10 +57,9 @@ public class Config {
             throw new RuntimeException("Too many groups");
         }
 
-
-        Pattern pattern = Pattern.compile("^([a-z0-9_\\.-]+\\@[\\da-z\\.-]+\\.[a-z\\.]{2,6})$", Pattern.CASE_INSENSITIVE);
+        Pattern patternMail = Pattern.compile("^([a-z0-9_.-]+@[\\da-z.-]+\\.[a-z.]{2,6})$", Pattern.CASE_INSENSITIVE);
         for (String victim : victims) {
-            Matcher matcher = pattern.matcher(victim);
+            matcher = patternMail.matcher(victim);
             if (!matcher.find()) {
                 throw new RuntimeException(victim + " is not a valid mail");
             }
