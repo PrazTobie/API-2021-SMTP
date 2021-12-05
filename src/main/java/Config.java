@@ -29,7 +29,7 @@ public class Config {
             throw new RuntimeException("No mail server specified");
         }
 
-        if (server.host.equals("")) {
+        if (server.host == null || server.host.equals("")) {
             throw new RuntimeException("No host specified");
         }
 
