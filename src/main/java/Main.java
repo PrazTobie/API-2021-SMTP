@@ -6,6 +6,8 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 
 public class Main {
+    static final String CRLF = "\r\n";
+
     public static void main(String[] args) throws IOException {
         Gson gson = new Gson();
         JsonReader jsonReader = new JsonReader(new FileReader("config.json"));
@@ -19,50 +21,77 @@ public class Main {
             BufferedReader is = new BufferedReader(new InputStreamReader(client.getInputStream(), StandardCharsets.UTF_8));
             BufferedWriter os = new BufferedWriter(new OutputStreamWriter(client.getOutputStream(), StandardCharsets.UTF_8));
 
-            String str;
             boolean shouldQuit = false;
             while(!shouldQuit) {
-                str = is.readLine();
+                String str = is.readLine();
                 System.out.println(str);
 
                 if (str.startsWith("220")) {
-                    os.write("EHLO " + config.auth + "\r\n");
+                    os.write("EHLO " + config.auth + CRLF);
                     os.flush();
                     continue;
                 }
 
                 if (str.startsWith("250 ")) {
-                    for (Group group : groups) {
-                        os.write("MAIL FROM: <" + group.sender + ">\r\n");
+                    for (int i = 0; i < groups.size(); i++) {
+                        Group group = groups.get(i);
+
+                        os.write("MAIL FROM: <" + group.sender + ">" + CRLF);
                         os.flush();
 
-                        System.out.println(is.readLine());
-
-                        for (String victim: group.victims) {
-                            os.write("RCPT TO: <" + victim +  ">\r\n");
-                            os.flush();
-                            System.out.println(is.readLine());
+                        str = is.readLine();
+                        System.out.println(str);
+                        if(!str.startsWith("250")) {
+                            System.out.println("Error with group #"+i + " when assigning sender.");
+                            continue;
                         }
 
-                        os.write("DATA\r\n");
+                        for (String victim: group.victims) {
+                            os.write("RCPT TO: <" + victim +  ">" + CRLF);
+                            os.flush();
+                            str = is.readLine();
+                            System.out.println(str);
+
+                            if(!str.startsWith("250")) {
+                                System.out.println("Error with group #"+i + " when assigning recipient \"" + victim +"\".");
+                                continue;
+                            }
+                        }
+
+                        os.write("DATA" + CRLF);
                         os.flush();
 
-                        System.out.println(is.readLine());
+                        str = is.readLine();
+                        System.out.println(str);
+                        if(!str.startsWith("354")) {
+                            System.out.println("Error with group #"+i + " when trying to send DATA.");
+                            os.write("RSET" + CRLF);
+                            os.flush();
+                            System.out.println(is.readLine());
+                            continue;
+                        }
 
                         String msg =
-                                "To: " + String.join(",", group.victims) + "\r\n" +
-                                "From: " + group.sender + "\r\n" +
-                                "Subject: Important\r\n" +
-                                "Content-type: text/plain; charset=utf-8\r\n" +
-                                "\r\n" + group.message + "\r\n" +
-                                "\r\n.\r\n";
+                                "To: " + String.join(",", group.victims) + CRLF +
+                                "From: " + group.sender + CRLF +
+                                "Subject: Important" + CRLF +
+                                "Content-type: text/plain; charset=utf-8" + CRLF +
+                                        CRLF + group.message + CRLF +
+                                        CRLF + "." + CRLF;
 
                         os.write(msg);
                         os.flush();
-                        System.out.println(is.readLine());
+
+                        str = is.readLine();
+                        System.out.println(str);
+
+                        if(!str.startsWith("250")) {
+                            System.out.println("Error with group #"+i + " when sending message \"" + group.message + "\".");
+                            continue;
+                        }
                     }
 
-                    os.write("quit\r\n");
+                    os.write("QUIT" + CRLF);
                     os.flush();
                     shouldQuit = true;
                 }
