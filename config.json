@@ -1,0 +1,10 @@
+{
+  "victims": ["sender1@sender.com", "victim1@victim.com", "victim2@victim.com", "sender2@sender.com", "victim3@victim.com", "victim4@victim.com", "sender3@sender.com", "victim5@victim.com", "victim6@victim.com"],
+  "numGroups": 3,
+  "messages": ["Message 1", "Message 2"],
+  "server": {
+    "host": "127.0.0.1",
+    "port": "2525"
+  },
+  "auth": "exemple.com"
+}
