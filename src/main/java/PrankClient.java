@@ -7,10 +7,10 @@ import java.util.List;
 public class PrankClient {
     static final String CRLF = "\r\n";
 
-    Socket client;
-    BufferedReader is;
-    BufferedWriter os;
-    String ehloAuth;
+    private Socket client;
+    private BufferedReader is;
+    private BufferedWriter os;
+    private String ehloAuth;
 
     public boolean connect(String host, int port, String ehloAuth) throws IOException {
         try {
@@ -31,7 +31,7 @@ public class PrankClient {
         }
     }
 
-    void close() {
+    public void close() {
         try {
             is.close();
             os.close();

@@ -4,8 +4,6 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 
 public class Main {
-    static final String CRLF = "\r\n";
-
     public static void main(String[] args) throws IOException {
         Gson gson = new Gson();
         JsonReader jsonReader = new JsonReader(new FileReader("config.json"));
