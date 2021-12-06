@@ -11,7 +11,7 @@ Pour chaque exécution du programme une série de mails sera envoyée selon le f
 Pour simuler l'envoie de mails lors de la phase de tests, il est utile d'utiliser un faux serveur mail SMTP recevant les mails de notre programme. Voici le marche à suivre pour en installer un via Docker:
 
 1. S'assurer que Docker est bien installé sur la machine et est fonctionnel (nous n'entrerons pas dans les détails d'installation de Docker)
-2. Construire l'image Docker `src/Dockerfile` avec la commande `docker build src/. -t mockserver`
+2. Construire l'image Docker `Dockerfile` avec la commande `docker build . -t mockserver`
 3. Lancer un container Docker avec l'image précédemment construite. Il faut remapper les ports car le Mock server va lancer le server mail sur le port 25 et le serveur web (pour visualiser les mails) sur le port 8282. Voici le commande: `docker run -p 8282:8282 -p 2525:25 mockserver`. Le serveur web est redirigé sur le port 8282 et le serveur mail sur le port 2525.
 4. Voilà votre Mock serveur devrait être lancé. N'oubliez pas d'éditer le fichier de configuration !
 
@@ -43,6 +43,32 @@ Pour gérer la configuration du programme, il faut utiliser le fichier `config.j
 
 * Il n'était pas demandé de pouvoir spécifier un object aux mails. Il est par défaut à `Important`.
 
-Clear and simple instructions for configuring your tool and running a prank campaign. If you do a good job, an external user should be able to clone your repo, edit a couple of files and send a batch of e-mails in less than 10 minutes.
+## Description de l'implémentation
 
-A description of your implementation: document the key aspects of your code. It is probably a good idea to start with a class diagram. Decide which classes you want to show (focus on the important ones) and describe their responsibilities in text. It is also certainly a good idea to include examples of dialogues between your client and an SMTP server (maybe you also want to include some screenshots here).
+### Diagramme de classes
+
+![Diagramme de classes](figures/SMTP.png "Diagramme de classes")
+
+### Description des classes
+
+Voici une succincte description des classes et de leurs rôles dans le projet.
+
+#### Config et Server
+
+* La classe `Config` et sa classe interne `Server` permettent de représenter le fichier de configuration et de manipuler ses informations.
+* La méthode `verify()` permet de s'assurer que le fichier de configuration est valide.
+
+#### Group
+
+* La classe `Group` permet de représenter un groupe qui sera victime d'un prank avec l'expéditeur du message ainsi que les vitctimes et le message.
+* La méthode statique `parseGroups(Config config)` permet de créer les groupes à partir des informations stockées dans la classe `Config`
+
+#### PrankClient
+
+* La classe `PrankClient` permet de représenter le client SMTP ayant pour mission de se connecter au serveur et envoyer les mails.
+* Il dispose de différentes méthodes pour gérer la communication.
+* C'est la méthode `prank(Group[] groups)` qui permet de commencer tout le processus d'envoi de mails
+
+### Capture d'écran
+
+![Echange](figures/echange.png "Echange")
