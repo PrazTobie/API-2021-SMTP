@@ -43,6 +43,11 @@ Pour gérer la configuration du programme, il faut utiliser le fichier `config.j
 
 * Il n'était pas demandé de pouvoir spécifier un object aux mails. Il est par défaut à `Important`.
 
+## Commandes utiles
+
+* Installer avec Maven: `mvn clean install`
+* Lancer l'exécutable: `java -jar target/API-2021-SMTP-1.0-SNAPSHOT-launcher.jar` (/!\ Le fichier de configuration doit se trouver dans le répértoire depuis lequel vous lancer le programme /!\)
+
 ## Description de l'implémentation
 
 ### Diagramme de classes
@@ -53,21 +58,21 @@ Pour gérer la configuration du programme, il faut utiliser le fichier `config.j
 
 Voici une succincte description des classes et de leurs rôles dans le projet.
 
-#### Config et Server
+#### PrankSMTP.Config et Server
 
-* La classe `Config` et sa classe interne `Server` permettent de représenter le fichier de configuration et de manipuler ses informations.
+* La classe `PrankSMTP.Config` et sa classe interne `Server` permettent de représenter le fichier de configuration et de manipuler ses informations.
 * La méthode `verify()` permet de s'assurer que le fichier de configuration est valide.
 
-#### Group
+#### PrankSMTP.Group
 
-* La classe `Group` permet de représenter un groupe qui sera victime d'un prank avec l'expéditeur du message ainsi que les vitctimes et le message.
-* La méthode statique `parseGroups(Config config)` permet de créer les groupes à partir des informations stockées dans la classe `Config`
+* La classe `PrankSMTP.Group` permet de représenter un groupe qui sera victime d'un prank avec l'expéditeur du message ainsi que les vitctimes et le message.
+* La méthode statique `parseGroups(PrankSMTP.Config config)` permet de créer les groupes à partir des informations stockées dans la classe `PrankSMTP.Config`
 
-#### PrankClient
+#### PrankSMTP.PrankClient
 
-* La classe `PrankClient` permet de représenter le client SMTP ayant pour mission de se connecter au serveur et envoyer les mails.
+* La classe `PrankSMTP.PrankClient` permet de représenter le client SMTP ayant pour mission de se connecter au serveur et envoyer les mails.
 * Il dispose de différentes méthodes pour gérer la communication.
-* C'est la méthode `prank(Group[] groups)` qui permet de commencer tout le processus d'envoi de mails
+* C'est la méthode `prank(PrankSMTP.Group[] groups)` qui permet de commencer tout le processus d'envoi de mails
 
 ### Capture d'écran
 
