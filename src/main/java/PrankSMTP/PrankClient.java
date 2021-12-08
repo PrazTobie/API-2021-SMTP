@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 
 public class PrankClient {
@@ -97,7 +98,7 @@ public class PrankClient {
         String msg =
                 "To: " + String.join(",", group.victims) + CRLF +
                 "From: " + group.sender + CRLF +
-                "Subject: Important" + CRLF +
+                "Subject: =?UTF-8?B?" + Base64.getEncoder().encodeToString("Important à regarder".getBytes(StandardCharsets.UTF_8)) + "?=" + CRLF +
                 "Content-type: text/plain; charset=utf-8" + CRLF +
                 CRLF + group.message + CRLF +
                 CRLF + "." + CRLF;
